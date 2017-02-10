@@ -23,7 +23,7 @@
         android:layout_centerHorizontal="true" />
 
     <com.gc.materialdesign.views.ButtonRectangle
-        android:id="@+id/button"
+        android:id="@+id/placepicker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="#1E88E5"
@@ -33,12 +33,12 @@
         android:layout_marginTop="57dp" />
 
     <com.gc.materialdesign.views.ButtonRectangle
-        android:id="@+id/button2"
+        android:id="@+id/placesearch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="#1E88E5"
         android:text="Place Search"
-        android:layout_below="@+id/button"
+        android:layout_below="@+id/placepicker"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="57dp" />
 
