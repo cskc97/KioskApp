@@ -14,33 +14,53 @@
     tools:showIn="@layout/activity_main">
 
 
-    <ImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        app:srcCompat="@drawable/kiosklogo"
-        android:id="@+id/imageView"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+    <com.gc.materialdesign.views.ButtonFlat
+        android:id="@+id/placesearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#1E88E5"
+        android:text="Search"
+        android:layout_alignBaseline="@+id/placepicker"
+        android:layout_alignBottom="@+id/placepicker"
+        android:layout_toEndOf="@+id/imageView" />
 
-    <com.gc.materialdesign.views.ButtonRectangle
+    <com.gc.materialdesign.views.ButtonFlat
         android:id="@+id/placepicker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="#1E88E5"
         android:text="Pick a place"
-        android:layout_below="@+id/imageView"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="57dp" />
+        android:layout_marginBottom="84dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="14dp" />
 
-    <com.gc.materialdesign.views.ButtonRectangle
-        android:id="@+id/placesearch"
+    <TextView
+        android:text="Welcome to your Kiosk"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#1E88E5"
-        android:text="Place Search"
-        android:layout_below="@+id/placepicker"
+        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="57dp" />
+        android:id="@+id/textView"
+        android:textColor="#212121"
+        android:textSize="25sp"/>
+
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        app:srcCompat="@drawable/kiosklogo"
+        android:id="@+id/imageView"
+        android:layout_above="@+id/textView"
+        android:layout_alignEnd="@+id/textView"
+        android:layout_marginEnd="17dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/placesearch"
+        android:id="@+id/floatingActionButton"
+        android:src="@drawable/button_action_touch"/>
 
 
 </RelativeLayout>
