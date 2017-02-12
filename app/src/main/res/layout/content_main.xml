@@ -62,5 +62,15 @@
         android:layout_alignStart="@+id/placepicker" />
 
 
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:id="@+id/textView2" />
+
 
 </RelativeLayout>

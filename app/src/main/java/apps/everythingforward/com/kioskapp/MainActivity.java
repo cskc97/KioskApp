@@ -1,7 +1,8 @@
 package apps.everythingforward.com.kioskapp;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -26,7 +27,8 @@ import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 import com.vstechlab.easyfonts.EasyFonts;
 
-import java.util.ArrayList;
+import apps.everythingforward.com.kioskapp.data.KioskContract;
+import apps.everythingforward.com.kioskapp.data.KioskDbHelper;
 
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
@@ -36,16 +38,27 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private GoogleApiClient mGoogleApiClient;
     Button button;
     public int PLACE_PICKER_REQUEST = 1;
-    TextView welcomeTextView;
+    TextView welcomeTextView, numberOfRows;
     FloatingActionButton fab;
+    private KioskDbHelper mDbHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mDbHelper = new KioskDbHelper(this);
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery(" SELECT * FROM " + KioskContract.KioskEntry.TABLE_NAME, null);
 
         //TODO: Implement the Places Search Option using the Places API.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        try {
+            numberOfRows = (TextView)findViewById(R.id.textView2);
+            numberOfRows.setText("Number of rows = "+ cursor.getCount());
+        }finally {
+            cursor.close();
+        }
+
 
         welcomeTextView = (TextView)findViewById(R.id.textView);
         welcomeTextView.setTypeface(EasyFonts.robotoLightItalic(getApplicationContext()));
@@ -86,7 +99,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 // repeat many times:
         ImageView itemIcon = new ImageView(this);
         itemIcon.setImageDrawable(getResources().getDrawable(R.drawable.searchlogo));
-        SubActionButton button1 = itemBuilder.setContentView(itemIcon).build(); PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+        SubActionButton button1 = itemBuilder.setContentView(itemIcon).build();
+        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
 
 
         button1.setOnClickListener(new View.OnClickListener() {
