@@ -1,5 +1,6 @@
 package apps.everythingforward.com.kioskapp;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -35,6 +36,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
 
     //GoogleApiClient Necessary for using the Places API.
+
+    //Just to push
     private GoogleApiClient mGoogleApiClient;
     Button button;
     public int PLACE_PICKER_REQUEST = 1;
@@ -59,9 +62,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             cursor.close();
         }
 
+        Toast.makeText(getApplicationContext(),"Openend app",Toast.LENGTH_SHORT).show();
 
-        welcomeTextView = (TextView)findViewById(R.id.textView);
-        welcomeTextView.setTypeface(EasyFonts.robotoLightItalic(getApplicationContext()));
+
 
         mGoogleApiClient = new GoogleApiClient
                 .Builder(this)
@@ -162,6 +165,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 Place place = PlacePicker.getPlace(data, this);
                 String toastMsg = String.format("Place: %s", place.getName());
                 Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+
             }
         }
     }
