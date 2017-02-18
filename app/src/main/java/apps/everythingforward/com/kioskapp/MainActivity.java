@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -17,6 +18,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gc.materialdesign.views.Button;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -28,6 +32,7 @@ import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 import com.vstechlab.easyfonts.EasyFonts;
 
+import apps.everythingforward.com.kioskapp.SugarRecords.PlaceRecords;
 import apps.everythingforward.com.kioskapp.data.KioskContract;
 import apps.everythingforward.com.kioskapp.data.KioskDbHelper;
 
@@ -44,25 +49,41 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     TextView welcomeTextView, numberOfRows;
     FloatingActionButton fab;
     private KioskDbHelper mDbHelper;
+
+
+
+    InterstitialAd interstitialAd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mDbHelper = new KioskDbHelper(this);
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery(" SELECT * FROM " + KioskContract.KioskEntry.TABLE_NAME, null);
 
-        //TODO: Implement the Places Search Option using the Places API.
+
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        try {
-            numberOfRows = (TextView)findViewById(R.id.textView2);
-            numberOfRows.setText("Number of rows = "+ cursor.getCount());
-        }finally {
-            cursor.close();
-        }
 
-        Toast.makeText(getApplicationContext(),"Openend app",Toast.LENGTH_SHORT).show();
+
+
+
+
+
+
+//        mDbHelper = new KioskDbHelper(this);
+//        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+//        Cursor cursor = db.rawQuery(" SELECT * FROM " + KioskContract.KioskEntry.TABLE_NAME, null);
+////
+////        try {
+////            numberOfRows = (TextView)findViewById(R.id.textView2);
+////            numberOfRows.setText("Number of rows = "+ cursor.getCount());
+////        }finally {
+////            cursor.close();
+////        }
+////
+////        Toast.makeText(getApplicationContext(),"Openend app",Toast.LENGTH_SHORT).show();
+
+//
 
 
 
@@ -97,40 +118,83 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
 
 
-
         SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
-// repeat many times:
+
         ImageView itemIcon = new ImageView(this);
         itemIcon.setImageDrawable(getResources().getDrawable(R.drawable.searchlogo));
         SubActionButton button1 = itemBuilder.setContentView(itemIcon).build();
+
+        interstitialAd = new InterstitialAd(this);
+        interstitialAd.setAdUnitId(getResources().getString(R.string.interstitial_ad_unit_id));
+        requestNewInterstitial();
+
+        interstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+                requestNewInterstitial();
+                invokePlacePicker();
+
+            }
+        });
+
+
+
+        SubActionButton button2 = createSubActionButton(getResources().getDrawable(R.drawable.databasesicon));
+
+
+
         PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+
+
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+            }
+        });
+
 
 
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-
-                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-
-                try {
-                    startActivityForResult(builder.build(MainActivity.this), PLACE_PICKER_REQUEST);
-                } catch (GooglePlayServicesRepairableException e) {
-                    e.printStackTrace();
-                } catch (GooglePlayServicesNotAvailableException e) {
-                    e.printStackTrace();
+                if(interstitialAd.isLoaded())
+                {
+                    interstitialAd.show();
                 }
+                else {
+
+                invokePlacePicker();
+
+
+                }
+
             }
         });
 
+
+
+
+
         FloatingActionMenu actionMenu = new FloatingActionMenu.Builder(this)
                 .addSubActionView(button1)
-
-
+                .addSubActionView(button2)
                 .attachTo(fab)
                 .build();
 
 
+    }
+
+    private void requestNewInterstitial() {
+
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .build();
+
+        interstitialAd.loadAd(adRequest);
     }
 
     @Override
@@ -166,6 +230,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 String toastMsg = String.format("Place: %s", place.getName());
                 Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
 
+                String placeName = (String)place.getName();
+                String placeAddress = (String)place.getAddress();
+                String placePhNo = (String)place.getPhoneNumber();
+                PlaceRecords placeRecord = new PlaceRecords(placeName,placePhNo,placeAddress);
+                placeRecord.save();
+
+
+
+
             }
         }
     }
@@ -174,6 +247,30 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
         Toast.makeText(MainActivity.this, "Could not connect to the internet!", Toast.LENGTH_SHORT).show();
+
+    }
+
+    public SubActionButton createSubActionButton(Drawable drawable)
+    {
+        SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
+        ImageView itemIcon = new ImageView(this);
+        itemIcon.setImageDrawable(drawable);
+        SubActionButton button = itemBuilder.setContentView(itemIcon).build();
+        return button;
+
+    }
+
+    private void invokePlacePicker()
+    {
+        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+
+        try {
+            startActivityForResult(builder.build(MainActivity.this), PLACE_PICKER_REQUEST);
+        } catch (GooglePlayServicesRepairableException e) {
+            e.printStackTrace();
+        } catch (GooglePlayServicesNotAvailableException e) {
+            e.printStackTrace();
+        }
 
     }
 }
