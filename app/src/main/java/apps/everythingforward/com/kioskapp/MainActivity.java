@@ -1,9 +1,6 @@
 package apps.everythingforward.com.kioskapp;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -30,10 +27,8 @@ import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
-import com.vstechlab.easyfonts.EasyFonts;
 
 import apps.everythingforward.com.kioskapp.SugarRecords.PlaceRecords;
-import apps.everythingforward.com.kioskapp.data.KioskContract;
 import apps.everythingforward.com.kioskapp.data.KioskDbHelper;
 
 
@@ -150,6 +145,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Takes you to the cards
+                Intent intent = new Intent(MainActivity.this, CardActivity.class);
+                startActivity(intent);
 
 
             }
