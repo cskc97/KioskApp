@@ -27,8 +27,15 @@ public class PlaceRecords extends SugarRecord {
         return placeName;
     }
 
+
     public void setPlaceName(String placeName) {
         this.placeName = placeName;
+    }
+    public String getPlaceAddress(){
+        return placeAddress;
+    }
+    public String getPlacePhoneNumber(){
+        return placePhone;
     }
 
 

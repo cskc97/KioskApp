@@ -7,7 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.List;
+
 import apps.everythingforward.com.kioskapp.R;
+import apps.everythingforward.com.kioskapp.SugarRecords.PlaceRecords;
 
 /**
  * Created by santh on 2/19/2017.
@@ -15,23 +18,40 @@ import apps.everythingforward.com.kioskapp.R;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
-    private String[] Titles = {"Card 1", "Card 2", "Card 3", "Card 4", "Card 5"};
-
-
+    //private String[] Titles = {"Card 1", "Card 2", "Card 3", "Card 4", "Card 5"};
+    String name, address, phNo;
+    private List<PlaceRecords> places = PlaceRecords.listAll(PlaceRecords.class);
     public static class ViewHolder extends RecyclerView.ViewHolder
     {
-       TextView itemTitle;
+       TextView placeNametv, placeAddresstv, placePhNotv;
 
 
         public ViewHolder(final View itemView) {
             super(itemView);
-            itemTitle = (TextView)itemView.findViewById(R.id.item_title);
+            placeNametv = (TextView)itemView.findViewById(R.id.place_name);
+            placeAddresstv = (TextView)itemView.findViewById(R.id.place_address);
+            placePhNotv = (TextView)itemView.findViewById(R.id.place_phone_no);
+
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     int positon = getAdapterPosition();
                     Snackbar.make(view, "Item clicked at position " + positon, Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
+
+                }
+            });
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    int positon = getAdapterPosition();
+
+                    PlaceRecords placeRecords = PlaceRecords.findById(PlaceRecords.class, positon+1);
+                    placeRecords.delete();
+                    Snackbar.make(view, "Item deleted at position " + positon, Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                    return true;
                 }
             });
         }
@@ -47,12 +67,18 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(MyAdapter.ViewHolder holder, int i) {
-        holder.itemTitle.setText(Titles[i]);
+        PlaceRecords placeRecords = places.get(i);
+        name = placeRecords.getPlaceName();
+        address = placeRecords.getPlaceAddress();
+        phNo = placeRecords.getPlacePhoneNumber();
+        holder.placeNametv.setText(name);
+        holder.placeAddresstv.setText(address);
+        holder.placePhNotv.setText(phNo);
 
     }
 
     @Override
     public int getItemCount() {
-        return Titles.length;
+        return places.size();
     }
 }
